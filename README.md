@@ -6,6 +6,10 @@ Rorschach is a simple alerting tool that uses Graphite for event data. Rorschach
 
 ![](http://i.imgur.com/Gyvvt.png)
 
+## Caveats
+
+It's rough around the edges. I wrote this in an evening, so things might be out of place, wonky, or just wrong. Expect improvements to follow shortly.
+
 ## Dependencies
 
 * Ruby >= 1.9.2
