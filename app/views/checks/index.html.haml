@@ -1,0 +1,33 @@
+%h1 Listing checks
+
+- if @checks.empty?
+  No checks yet. 
+  = link_to "Create your first one.", new_check_path
+- else
+  %table.table.table-striped
+    %tr
+      %th Metric
+      %th Warning
+      %th Critical
+      %th Resolve
+      %th Repeat
+      %th Interval
+      %th
+      %th
+      %th
+
+    - @checks.each do |check|
+      %tr
+        %td= check.metric
+        %td= check.warning
+        %td= check.critical
+        %td= check.resolve
+        %td= check.repeat
+        %td= check.interval
+        %td= link_to 'Show', check
+        %td= link_to 'Edit', edit_check_path(check)
+        %td= link_to 'Destroy', check, :confirm => 'Are you sure?', :method => :delete
+
+  %br
+
+  = link_to 'New Check', new_check_path, class: 'btn btn-large'

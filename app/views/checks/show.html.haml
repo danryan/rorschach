@@ -1,0 +1,24 @@
+%p#notice= notice
+
+%p
+  %b Metric:
+  = @check.metric
+%p
+  %b Warning:
+  = @check.warning
+%p
+  %b Critical:
+  = @check.critical
+%p
+  %b Resolve:
+  = @check.resolve
+%p
+  %b Repeat:
+  = @check.repeat
+%p
+  %b Interval:
+  = @check.interval
+
+= link_to 'Edit', edit_check_path(@check)
+\|
+= link_to 'Back', checks_path
