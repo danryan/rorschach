@@ -9,12 +9,16 @@ gem 'simple_form'
 gem 'cabin'
 # gem 'faraday'
 gem 'rest-client'
+gem 'state_machine'
 
 # Sidekiq and related dependencies
 gem 'sidekiq'
 gem 'slim', :require => nil
 gem 'sinatra', :require => nil
 
+# Handler dependencies
+gem 'tinder'
+gem 'redphone'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

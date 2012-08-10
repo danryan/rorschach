@@ -9,10 +9,8 @@
       %th Metric
       %th Warning
       %th Critical
-      %th Resolve
-      %th Repeat
       %th Interval
-      %th
+      %th State
       %th
       %th
 
@@ -21,12 +19,18 @@
         %td= check.metric
         %td= check.warning
         %td= check.critical
-        %td= check.resolve
-        %td= check.repeat
         %td= check.interval
-        %td= link_to 'Show', check
-        %td= link_to 'Edit', edit_check_path(check)
-        %td= link_to 'Destroy', check, :confirm => 'Are you sure?', :method => :delete
+        %td
+          - case check.state
+          - when 'ok'
+            %span.label= check.state.upcase
+          - when 'warning'
+            %span.label.label-warning= check.state.upcase
+          - when 'critical'
+            %span.label.label-important= check.state.upcase
+          
+        %td= link_to 'Edit', edit_check_path(check), class: 'btn btn-info'
+        %td= link_to 'Delete', check, confirm: 'Are you sure?', method: :delete, class: 'btn btn-danger'
 
   %br
 

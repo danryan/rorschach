@@ -1,0 +1,3 @@
+class Handler::Email
+  
+end

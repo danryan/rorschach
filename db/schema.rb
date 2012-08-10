@@ -17,12 +17,14 @@ ActiveRecord::Schema.define(:version => 20120809200840) do
     t.string   "metric"
     t.decimal  "warning"
     t.decimal  "critical"
-    t.integer  "duration"
-    t.boolean  "resolve"
-    t.boolean  "repeat"
-    t.integer  "interval"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "duration",   :default => 60
+    t.boolean  "repeat",     :default => false
+    t.integer  "interval",   :default => 60
+    t.text     "handlers",   :default => "[\"campfire\"]"
+    t.string   "state"
+    t.string   "last_value"
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
   end
 
 end

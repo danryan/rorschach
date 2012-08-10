@@ -1,31 +1,48 @@
 class CheckWorker
   include Sidekiq::Worker
 
-  def perform(options={})
-    metric = options['metric']
-    value = options['value'].to_f
-    warning = options['warning'].to_f
-    critical = options['critical'].to_f
+  def perform(id)
+    check = Check.find(id)
+    
+    metric = check.metric
+    value = check.get_value
+    warning = check.warning
+    critical = check.critical
+    last_state = check.state
     
     if critical > warning
-      if value >= critical
-        Rails.logger.error "CRITICAL", :metric => metric, :status => "CRITICAL", :value => value
-      elsif value >= warning
-        Rails.logger.warn "WARNING", :metric => metric, :status => "WARNING", :value => value
-      else
-        Rails.logger.info "OK", :metric => metric, :status => "OK", :value => value
+      current_state = case 
+        when value >= critical
+          'critical'
+        when value >= warning
+          'warning'
+        else
+          'ok'
       end
     else
-      if value <= critical
-        Rails.logger.error "CRITICAL", :metric => metric, :status => "CRITICAL", :value => value
-        
-      elsif value <= warning
-        Rails.logger.warn "WARNING", :metric => metric, :status => "WARNING", :value => value
-      else
-        Rails.logger.info "OK", :metric => metric, :status => "OK", :value => value
+      current_state = case
+        when value <= critical
+          'critical'
+        when value <= warning
+          'warning'
+        else
+          'ok'
       end
     end
     
-    self.class.perform_in(options[:interval], options)
+    check.last_value = value
+    check.save
+    
+    if current_state != last_state
+      Rails.logger.info current_state: current_state, last_state: last_state
+      check.send("set_#{current_state}")
+    else
+      Rails.logger.info "nothing to see here"
+    end
+
+    Rails.logger.debug check_id: check.id, metric: check.metric, value: value,  state: current_state
+  
+    self.class.perform_in(check.interval, check.id)
+    
   end
 end
