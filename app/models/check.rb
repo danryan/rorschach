@@ -20,8 +20,12 @@ class Check < ActiveRecord::Base
     end
     raw_data = RestClient.get(metric_url, headers)
     data = JSON.parse(raw_data)
-    points = data.first["datapoints"].map{ |v,_| v }.compact
-    self.value = ((points.reduce { |a, b| a + b }) / points.size.to_f).to_f
+    if data.present? 
+      points = data.first["datapoints"].map{ |v,_| v }.compact
+      self.value = ((points.reduce { |a, b| a + b }) / points.size.to_f).to_f
+    else
+      self.value = nil
+    end
   end
 
   def schedule_first_check
@@ -39,6 +43,11 @@ class Check < ActiveRecord::Base
     EmailWorker.perform_async(results) if handlers.include?('email')
   end
 
+
+  def schedule
+    CheckWorker.perform_async(id)
+  end
+  
   state_machine :initial => :ok do
     after_transition any => any, :do => :notify
 
@@ -47,16 +56,19 @@ class Check < ActiveRecord::Base
     state :critical
 
     event :set_warning do
-      transition [ :ok, :critical ] => :warning
+      transition any => :warning
     end
 
     event :set_critical do
-      transition [ :ok, :warning ] => :critical
+      transition any => :critical
     end
 
     event :set_ok do
-      transition [ :warning, :critical ] => :ok
+      transition any => :ok
     end
 
+    event :set_undefined do
+      transition any => :undefined
+    end
   end
 end

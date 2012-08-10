@@ -1,9 +1,11 @@
 = simple_form_for @check, html: { class: 'form-horizontal' } do |f|
 
-  = f.input :metric
-  = f.input :warning
-  = f.input :critical
-  = f.input :interval
+  = f.input :metric, hint: "The Graphite target metric to check."
+  = f.input :warning, hint: "The warning threshold."
+  = f.input :critical, hint: "The critical threshold."
+  = f.input :duration, hint: "The timeframe (in seconds) for how many datapoints will be averaged."
+  = f.input :interval, hint: "How often (in seconds) this metric will be checked."
+  
   
   .form-actions
     = f.button :submit, class: 'btn-large btn-primary'

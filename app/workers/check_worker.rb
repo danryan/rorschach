@@ -10,24 +10,28 @@ class CheckWorker
     critical = check.critical
     last_state = check.state
     
-    if critical > warning
-      current_state = case 
-        when value >= critical
-          'critical'
-        when value >= warning
-          'warning'
-        else
-          'ok'
+    if value
+      if critical > warning
+        current_state = case 
+          when value >= critical
+            'critical'
+          when value >= warning
+            'warning'
+          else
+            'ok'
+        end
+      else
+        current_state = case
+          when value <= critical
+            'critical'
+          when value <= warning
+            'warning'
+          else
+            'ok'
+        end
       end
     else
-      current_state = case
-        when value <= critical
-          'critical'
-        when value <= warning
-          'warning'
-        else
-          'ok'
-      end
+      current_state = 'undefined'
     end
     
     check.last_value = value

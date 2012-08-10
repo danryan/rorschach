@@ -10,7 +10,10 @@
       %th Warning
       %th Critical
       %th Interval
+      %th Duration
+      %th Last Value
       %th State
+      %th
       %th
       %th
 
@@ -20,15 +23,20 @@
         %td= check.warning
         %td= check.critical
         %td= check.interval
+        %td= check.duration
+        %td= check.last_value
         %td
           - case check.state
           - when 'ok'
-            %span.label= check.state.upcase
+            %span.label.label-success= check.state.upcase
           - when 'warning'
             %span.label.label-warning= check.state.upcase
           - when 'critical'
             %span.label.label-important= check.state.upcase
+          - when 'undefined'
+            %span.label.label-info= check.state.upcase
           
+        %td= link_to 'Schedule', schedule_check_path(check), class: 'btn btn-primary'
         %td= link_to 'Edit', edit_check_path(check), class: 'btn btn-info'
         %td= link_to 'Delete', check, confirm: 'Are you sure?', method: :delete, class: 'btn btn-danger'
 

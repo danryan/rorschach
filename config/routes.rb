@@ -2,7 +2,11 @@ Rorschach::Application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
   
-  resources :checks
+  resources :checks do
+    member do
+      get 'schedule'
+    end
+  end
 
   root :to => 'checks#index'
   # The priority is based upon order of creation:

@@ -80,4 +80,16 @@ class ChecksController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def schedule
+    @check = Check.find(params[:id])
+    
+    respond_to do |format|
+      if @check.schedule
+        format.html { redirect_to checks_url }
+        format.json { head :no_content }
+      end
+    end
+  end
+  
 end
