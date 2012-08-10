@@ -4,6 +4,8 @@
 
 Rorschach is a simple alerting tool that uses Graphite for event data. Rorschach takes Graphite metrics and sends out notifications based on pre-defined warning and critical thresholds. Notifications can (currently) be sent to Campfire, PagerDuty, and via email.
 
+![](http://i.imgur.com/pNI1y.png)
+
 ## Dependencies
 
 * Ruby >= 1.9.2
@@ -43,10 +45,6 @@ git push heroku master
 heroku scale web=1
 heroku scale worker=1
 ```
-
-
-
-### Production
 
 ## TODO
 
