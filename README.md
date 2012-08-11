@@ -38,6 +38,7 @@ Rorschach is designed to be easily deployed to [Heroku](http://heroku.com). None
 ```bash
 heroku create -s cedar
 heroku addons:add heroku-postgresql:dev
+heroku pg:promote HEROKU_POSTGRESQL_DEV_NAME
 heroku addons:add redistogo
 heroku config:set GRAPHITE_URL=[...]
 heroku config:set GRAPHITE_AUTH=[...]
