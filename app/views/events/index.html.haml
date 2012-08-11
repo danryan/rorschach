@@ -1,0 +1,19 @@
+%h1 Last 100 Events
+
+
+%table.table.table-striped
+  %tr
+    %th Check ID
+    %th Metric
+    %th Value
+    %th From
+    %th To
+
+  - @events.each do |event|
+    %tr
+      %td= event.check_id
+      %td= event.metric
+      %td= event.value
+      %td= event.from
+      %td= event.to
+      
