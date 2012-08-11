@@ -1,6 +1,7 @@
 class Check < ActiveRecord::Base
   attr_accessible :critical, :interval, :metric, :repeat, 
-    :resolve, :warning, :duration, :handlers
+    :resolve, :warning, :duration, :handlers, :scheduled, :last_value
+    
   attr_accessor :value, :previous_state, :current_state
 
   serialize :handlers
@@ -32,25 +33,40 @@ class Check < ActiveRecord::Base
     CheckWorker.perform_async(id)
   end
   
-  def status_changed?
-    last_status != current_status
+  def one_time_schedule
+    OneTimeCheckWorker.perform_async(id)
   end
-
-  def notify
-    results = { check_id: id, metric: metric, value: last_value, state: state }
-    PagerDutyWorker.perform_async(results) if handlers.include?('pagerduty')
-    CampfireWorker.perform_async(results) if handlers.include?('campfire')
-    EmailWorker.perform_async(results) if handlers.include?('email')
-  end
-
-
+  
+  # def schedule
+  #   CheckWorker.perform_async(id)
+  #   update_attributes(scheduled: true)
+  # end
+  
   def schedule
-    CheckWorker.perform_async(id)
+    CheckWorker.perform_in(interval, id) 
   end
   
   state_machine :initial => :ok do
-    after_transition any => any, :do => :notify
-
+    after_transition any => any do |check, transition|
+      event = { 
+        check_id: check.id,
+        metric: check.metric,
+        value: check.last_value,
+        from: transition.from,
+        to: transition.to
+      }
+      
+      PagerDutyWorker.perform_async(event) if check.handlers.include?('pagerduty')
+      CampfireWorker.perform_async(event) if check.handlers.include?('campfire')
+      EmailWorker.perform_async(event) if check.handlers.include?('email')
+      
+      Rorschach.redis do |c|
+        c.lpush "events", event.to_json
+        c.ltrim "events", 0, 100
+      end
+      
+    end
+    
     state :ok
     state :warning
     state :critical

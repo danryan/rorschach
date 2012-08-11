@@ -34,19 +34,12 @@ class CheckWorker
       current_state = 'undefined'
     end
     
-    check.last_value = value
-    check.save
+    check.update_attributes(last_value: value)
     
     if current_state != last_state
-      Rails.logger.info current_state: current_state, last_state: last_state
       check.send("set_#{current_state}")
-    else
-      Rails.logger.info "nothing to see here"
-    end
-
-    Rails.logger.debug check_id: check.id, metric: check.metric, value: value,  state: current_state
-  
-    self.class.perform_in(check.interval, check.id)
+    end    
     
+    check.schedule
   end
 end

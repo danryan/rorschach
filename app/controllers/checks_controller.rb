@@ -85,7 +85,7 @@ class ChecksController < ApplicationController
     @check = Check.find(params[:id])
     
     respond_to do |format|
-      if @check.schedule
+      if @check.one_time_schedule
         format.html { redirect_to checks_url }
         format.json { head :no_content }
       end

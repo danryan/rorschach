@@ -16,7 +16,12 @@ if defined?(Bundler)
 end
 
 module Rorschach
-
+  
+  def self.redis(&block)
+    @redis ||= RedisConnection.create
+    raise ArgumentError, "requires a block" if !block
+    @redis.with(&block)
+  end
   
   class Application < Rails::Application
     config.generators do |g|
