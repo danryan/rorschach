@@ -7,6 +7,8 @@ Rorschach::Application.routes.draw do
       get 'schedule'
     end
   end
+  
+  resources :events
 
   root :to => 'checks#index'
   # The priority is based upon order of creation:
