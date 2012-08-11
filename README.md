@@ -53,7 +53,6 @@ heroku scale worker=1
 
 ## TODO
 
-* Schedule all checks on startup
 * Allow checks to be paused
 * Actually send to PagerDuty
 * Customize per-check handlers
